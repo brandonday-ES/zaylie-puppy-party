@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zaylie's Puppy Party Adventure</title>
+  <meta name="robots" content="noindex">
+  <meta property="og:title" content="Zaylie's Puppy Party Adventure">
+  <meta property="og:description" content="Tap to open the Golden Paw puppy party games.">
+  <meta property="og:image" content="https://brandonday-es.github.io/zaylie-puppy-party/golden-pages/page-01.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --ink: #17232c;
+      --gold: #ffd43d;
+      --sun: #fff39a;
+      --coral: #f05d4f;
+      --teal: #087d76;
+      --blue: #2f69b1;
+      --green: #4f9a58;
+      --white: #ffffff;
+      --soft: #fffbea;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 6% 12%, rgba(255, 212, 61, 0.92) 0 8rem, transparent 8.2rem),
+        radial-gradient(circle at 92% 7%, rgba(240, 93, 79, 0.25) 0 9rem, transparent 9.2rem),
+        radial-gradient(circle at 92% 86%, rgba(8, 125, 118, 0.16) 0 12rem, transparent 12.2rem),
+        linear-gradient(180deg, #fffbea 0%, #fff3b4 54%, #f7fff9 100%);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    #blastLayer,
+    #partyWords {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    #partyWords {
+      z-index: 100;
+      display: grid;
+      place-items: center;
+    }
+
+    .pop-pup {
+      position: fixed;
+      left: var(--x);
+      top: var(--y);
+      z-index: 90;
+      font-size: var(--size);
+      line-height: 1;
+      transform: translate(-50%, -50%) scale(0.1) rotate(0deg);
+      filter: drop-shadow(0 12px 0 rgba(23, 35, 44, 0.14));
+      animation: popPup var(--dur) cubic-bezier(0.02, 0.86, 0.12, 1) forwards;
+    }
+
+    @keyframes popPup {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.05) rotate(0deg); }
+      12% { opacity: 1; transform: translate(calc(-50% + var(--tx) * 0.25), calc(-50% + var(--ty) * 0.25)) scale(1.15) rotate(calc(var(--spin) * 0.25)); }
+      62% { opacity: 1; transform: translate(calc(-50% + var(--tx) * 0.85), calc(-50% + var(--ty) * 0.85)) scale(var(--scale)) rotate(var(--spin)); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) + 12vh)) scale(0.35) rotate(calc(var(--spin) * 1.2)); }
+    }
+
+    .star-bit {
+      position: fixed;
+      left: var(--x);
+      top: var(--y);
+      width: var(--s);
+      height: var(--s);
+      border-radius: 50%;
+      background: var(--c);
+      transform: translate(-50%, -50%);
+      animation: starBit var(--dur) ease-out forwards;
+    }
+
+    @keyframes starBit {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.25); }
+    }
+
+    .big-words {
+      width: min(92vw, 740px);
+      padding: 18px 20px 22px;
+      border: 5px solid var(--ink);
+      border-radius: 28px;
+      background: var(--white);
+      text-align: center;
+      box-shadow: 0 20px 0 rgba(23, 35, 44, 0.14), 0 28px 80px rgba(23, 35, 44, 0.25);
+      animation: wordsPop 1.05s cubic-bezier(0.05, 0.9, 0.12, 1) forwards;
+    }
+
+    .big-words strong {
+      display: block;
+      font-size: clamp(44px, 13vw, 112px);
+      line-height: 0.82;
+      color: var(--coral);
+      letter-spacing: 0;
+    }
+
+    .big-words span {
+      display: block;
+      margin-top: 8px;
+      font-size: clamp(22px, 6vw, 42px);
+      font-weight: 1000;
+      color: var(--teal);
+    }
+
+    @keyframes wordsPop {
+      0% { opacity: 0; transform: scale(0.12) rotate(-14deg); }
+      22% { opacity: 1; transform: scale(1.12) rotate(5deg); }
+      58% { opacity: 1; transform: scale(0.98) rotate(-2deg); }
+      100% { opacity: 0; transform: scale(1.3) rotate(0deg); }
+    }
+
+    body.shake { animation: shake 0.72s linear; }
+    @keyframes shake {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      12% { transform: translate3d(-9px, 5px, 0) rotate(-0.3deg); }
+      25% { transform: translate3d(8px, -7px, 0) rotate(0.35deg); }
+      40% { transform: translate3d(-7px, -4px, 0) rotate(-0.2deg); }
+      55% { transform: translate3d(5px, 5px, 0); }
+      74% { transform: translate3d(-3px, 2px, 0); }
+    }
+
+    .door {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,0.95), rgba(255,243,160,0.95) 44%, rgba(255,212,61,0.95)),
+        var(--gold);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .door.gone {
+      opacity: 0;
+      transform: scale(1.04);
+      pointer-events: none;
+    }
+
+    .present {
+      width: min(88vw, 430px);
+      min-height: 430px;
+      position: relative;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 5px solid var(--ink);
+      border-radius: 32px;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, transparent 0 calc(50% - 24px), var(--coral) calc(50% - 24px) calc(50% + 24px), transparent calc(50% + 24px)),
+        linear-gradient(180deg, transparent 0 calc(50% - 24px), var(--coral) calc(50% - 24px) calc(50% + 24px), transparent calc(50% + 24px)),
+        linear-gradient(145deg, #ffffff, var(--sun));
+      box-shadow: 0 24px 0 rgba(23, 35, 44, 0.15), 0 30px 90px rgba(23, 35, 44, 0.24);
+    }
+
+    .present::before {
+      content: "";
+      position: absolute;
+      left: -16px;
+      right: -16px;
+      top: -30px;
+      height: 102px;
+      border: 5px solid var(--ink);
+      border-radius: 32px 32px 14px 14px;
+      background: linear-gradient(180deg, #ffffff, var(--gold));
+      transform-origin: center bottom;
+      animation: lid 0.92s ease-in-out infinite;
+    }
+
+    @keyframes lid {
+      0%, 100% { transform: rotate(0) translateY(0); }
+      45% { transform: rotate(-3deg) translateY(-8px); }
+      72% { transform: rotate(2deg) translateY(-5px); }
+    }
+
+    .face {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(68px, 18vw, 108px);
+      animation: bounce 0.78s ease-in-out infinite;
+      filter: drop-shadow(0 10px 0 rgba(23, 35, 44, 0.12));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 0;
+      font-size: clamp(48px, 13vw, 82px);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .tap {
+      position: relative;
+      z-index: 1;
+      max-width: calc(100% - 38px);
+      min-height: 46px;
+      padding: 11px 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      color: white;
+      background: var(--teal);
+      font-size: 14px;
+      font-weight: 1000;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 22px));
+      margin: 0 auto;
+      padding: 18px 0 46px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.55s ease 0.12s;
+    }
+
+    main.shown {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .adventure {
+      min-height: calc(100vh - 36px);
+      display: grid;
+      gap: 18px;
+      align-content: center;
+      padding: 8px 0 26px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .badge {
+      width: fit-content;
+      max-width: 100%;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px;
+      border: 3px solid var(--ink);
+      border-radius: 999px;
+      background: var(--white);
+      font-weight: 1000;
+      box-shadow: 0 5px 0 rgba(23, 35, 44, 0.12);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(46px, 12vw, 100px);
+      line-height: 0.84;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(21px, 5vw, 38px);
+      line-height: 1.04;
+      font-weight: 1000;
+      color: var(--coral);
+    }
+
+    .sublead {
+      margin: 0;
+      max-width: 720px;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
+      margin-top: 4px;
+    }
+
+    .button {
+      min-height: 54px;
+      padding: 12px 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--ink);
+      border-radius: 14px;
+      color: var(--ink);
+      background: var(--gold);
+      font: inherit;
+      font-weight: 1000;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 0 7px 0 rgba(23, 35, 44, 0.13);
+    }
+
+    .button.primary {
+      color: white;
+      background: var(--coral);
+      border-color: white;
+    }
+
+    .button.teal {
+      color: white;
+      background: var(--teal);
+      border-color: white;
+    }
+
+    .button:active {
+      transform: translateY(4px);
+      box-shadow: 0 3px 0 rgba(23, 35, 44, 0.13);
+    }
+
+    .mission-board {
+      display: grid;
+      gap: 14px;
+    }
+
+    .mission {
+      min-height: 210px;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-content: space-between;
+      gap: 14px;
+      padding: 18px;
+      border: 4px solid var(--ink);
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 12px 0 rgba(23, 35, 44, 0.12), 0 18px 38px rgba(23, 35, 44, 0.1);
+    }
+
+    .mission.training { background: linear-gradient(145deg, #ffffff, #fff3a5); }
+    .mission.bone { background: linear-gradient(145deg, #ffffff, #dff8ff); }
+    .mission.cert { background: linear-gradient(145deg, #ffffff, #e6ffe8); }
+
+    .mission::after {
+      content: attr(data-emoji);
+      position: absolute;
+      right: -8px;
+      bottom: -20px;
+      font-size: 100px;
+      opacity: 0.2;
+      transform: rotate(-9deg);
+    }
+
+    .mission h3 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(28px, 7vw, 46px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .mission p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 850;
+    }
+
+    .mission .mini {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
+      border: 2px solid rgba(23, 35, 44, 0.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.84);
+      font-size: 13px;
+      font-weight: 1000;
+    }
+
+    .paw-path {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      align-items: center;
+      padding: 13px;
+      border: 3px dashed rgba(23, 35, 44, 0.22);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.74);
+    }
+
+    .paw-step {
+      min-height: 70px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: white;
+      font-size: clamp(30px, 9vw, 58px);
+      box-shadow: inset 0 0 0 3px rgba(23, 35, 44, 0.08);
+      animation: wiggle 1.25s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 0.08s);
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-7px) rotate(3deg); }
+    }
+
+    .dad-kit {
+      display: grid;
+      gap: 14px;
+      padding: 22px 0 0;
+    }
+
+    .kit-head {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 3px solid rgba(23, 35, 44, 0.14);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.76);
+    }
+
+    .kit-head h3 {
+      margin: 0;
+      font-size: clamp(28px, 7vw, 48px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+
+    .kit-head p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    details {
+      border: 3px solid rgba(23, 35, 44, 0.16);
+      border-radius: 18px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 12px 26px rgba(23, 35, 44, 0.08);
+    }
+
+    summary {
+      min-height: 58px;
+      padding: 16px;
+      cursor: pointer;
+      font-weight: 1000;
+      background: var(--gold);
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .pages {
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .kit-page {
+      margin: 0;
+      padding: 8px;
+      border: 2px solid rgba(23, 35, 44, 0.12);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .kit-page img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 7px;
+    }
+
+    .kit-page figcaption {
+      margin: 8px 2px 0;
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(23, 35, 44, 0.72);
+    }
+
+    @media (min-width: 760px) {
+      .hero {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+
+      .button-row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .mission-board {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .pages {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition-duration: 0.1s !important; scroll-behavior: auto !important; }
+      #blastLayer,
+      #partyWords { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="blastLayer" aria-hidden="true"></div>
+  <div id="partyWords" aria-hidden="true"></div>
+
+  <section class="door" id="door" aria-label="Birthday present for Zaylie">
+    <button class="present" type="button" id="openGift">
+      <div class="face">🎁🐶</div>
+      <h1>For Zaylie</h1>
+      <span class="tap">Tap to start the puppy party</span>
+    </button>
+  </section>
+
+  <main id="party" aria-hidden="true">
+    <section class="adventure" id="adventure">
+      <div class="hero">
+        <div>
+          <div class="badge">Golden Paw Adoption Academy</div>
+          <h2>Puppy Party<br>Adventure</h2>
+          <p class="lead">Zaylie is Chief Puppy Officer today.</p>
+          <p class="sublead">Pick a mission, blast the puppies, solve the bone mystery, then print the kit when Dad needs the real party pieces.</p>
+          <div class="button-row">
+            <button class="button primary" type="button" data-blast>Blast puppies</button>
+            <a class="button teal" href="golden_paw_adoption_academy_kit.pdf">Open print kit</a>
+            <a class="button" href="#dad-kit">Dad pages</a>
+          </div>
+        </div>
+        <div class="paw-path" aria-label="puppy party path">
+          <div class="paw-step" style="--i:0">🐶</div>
+          <div class="paw-step" style="--i:1">🐾</div>
+          <div class="paw-step" style="--i:2">🦴</div>
+          <div class="paw-step" style="--i:3">🏆</div>
+          <div class="paw-step" style="--i:4">🎂</div>
+        </div>
+      </div>
+
+      <div class="mission-board" aria-label="party missions">
+        <article class="mission training" data-emoji="🐾">
+          <h3>Puppy Training Quest</h3>
+          <p>Jump pillows, toss the bone, tiptoe like a quiet puppy, then graduate your stuffed dog.</p>
+          <div class="mini">
+            <span class="pill">Pillow Hop</span>
+            <span class="pill">Fetch Basket</span>
+            <span class="pill">Collar Parade</span>
+          </div>
+        </article>
+        <article class="mission bone" data-emoji="🦴">
+          <h3>Golden Bone Caper</h3>
+          <p>A birthday detective hunt. Follow clues, collect evidence, and find the hidden bone stash.</p>
+          <div class="mini">
+            <span class="pill">Clue Cards</span>
+            <span class="pill">Detective Badges</span>
+            <span class="pill">Bone Stash</span>
+          </div>
+        </article>
+        <article class="mission cert" data-emoji="🏆">
+          <h3>Graduation Time</h3>
+          <p>Every kid and puppy gets a certificate after they finish the training and solve the case.</p>
+          <div class="mini">
+            <span class="pill">PupPorts</span>
+            <span class="pill">Tokens</span>
+            <span class="pill">Certificates</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="dad-kit" id="dad-kit">
+      <div class="kit-head">
+        <h3>Dad Print Kit</h3>
+        <p>The actual Golden Paw PDF is here. The full pages are tucked below so the kid page stays fun, but everything needed for the party is still included.</p>
+        <div class="button-row">
+          <a class="button primary" href="golden_paw_adoption_academy_kit.pdf">Open the PDF</a>
+          <button class="button teal" type="button" data-blast>Blast puppies again</button>
+          <a class="button" href="#adventure">Back to game board</a>
+        </div>
+      </div>
+
+      <details>
+        <summary>Show all 10 printable pages</summary>
+        <div class="pages">
+          <figure class="kit-page">
+            <img src="golden-pages/page-01.png" alt="Golden Paw Adoption Academy cover">
+            <figcaption>Page 1 - Cover and print plan</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-02.png" alt="Dad run sheet">
+            <figcaption>Page 2 - Dad run sheet</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-03.png" alt="Golden Pup Training Quest instructions">
+            <figcaption>Page 3 - Golden Pup Training Quest</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-04.png" alt="Training station signs">
+            <figcaption>Page 4 - Training station signs</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-05.png" alt="Golden Pup challenge cards">
+            <figcaption>Page 5 - Challenge cards</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-06.png" alt="PupPorts">
+            <figcaption>Page 6 - PupPorts</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-07.png" alt="The Great Golden Bone Caper instructions">
+            <figcaption>Page 7 - The Great Golden Bone Caper</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-08.png" alt="Golden Bone Caper clue cards">
+            <figcaption>Page 8 - Clue cards</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-09.png" alt="Badges tokens and evidence labels">
+            <figcaption>Page 9 - Badges, tokens, and labels</figcaption>
+          </figure>
+          <figure class="kit-page">
+            <img src="golden-pages/page-10.png" alt="Graduation certificates">
+            <figcaption>Page 10 - Graduation certificates</figcaption>
+          </figure>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    const door = document.getElementById('door');
+    const openGift = document.getElementById('openGift');
+    const party = document.getElementById('party');
+    const adventure = document.getElementById('adventure');
+    const blastLayer = document.getElementById('blastLayer');
+    const partyWords = document.getElementById('partyWords');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let blastTimer = 0;
+
+    function cleanBlast() {
+      blastLayer.replaceChildren();
+      partyWords.replaceChildren();
+      clearTimeout(blastTimer);
+    }
+
+    function words() {
+      partyWords.innerHTML = '<div class="big-words"><strong>PUPPY PARTY!</strong><span>Zaylie is 6!</span></div>';
+      setTimeout(() => partyWords.replaceChildren(), 1120);
+    }
+
+    function blast(x = innerWidth / 2, y = innerHeight / 2) {
+      if (reduced) return;
+      cleanBlast();
+      document.body.classList.add('shake');
+      words();
+
+      const pups = ['🐶', '🐕', '🧸', '🐾', '🦴', '🎀', '⭐', '🏆', '🎂'];
+      const count = innerWidth < 700 ? 30 : 44;
+      const reach = Math.max(innerWidth, innerHeight) * 0.82;
+
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        const angle = Math.random() * Math.PI * 2;
+        const distance = reach * (0.28 + Math.random() * 0.8);
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - innerHeight * (0.08 + Math.random() * 0.16);
+        const spin = (Math.random() < 0.5 ? -1 : 1) * (180 + Math.random() * 540);
+        const size = (innerWidth < 700 ? 42 : 56) + Math.random() * (innerWidth < 700 ? 54 : 74);
+
+        el.className = 'pop-pup';
+        el.textContent = pups[(Math.random() * pups.length) | 0];
+        el.style.setProperty('--x', x + 'px');
+        el.style.setProperty('--y', y + 'px');
+        el.style.setProperty('--tx', tx + 'px');
+        el.style.setProperty('--ty', ty + 'px');
+        el.style.setProperty('--spin', spin + 'deg');
+        el.style.setProperty('--size', size + 'px');
+        el.style.setProperty('--scale', (0.72 + Math.random() * 0.55).toFixed(2));
+        el.style.setProperty('--dur', (760 + Math.random() * 420) + 'ms');
+        blastLayer.appendChild(el);
+      }
+
+      for (let i = 0; i < 110; i++) {
+        const bit = document.createElement('i');
+        const angle = Math.random() * Math.PI * 2;
+        const distance = reach * (0.18 + Math.random() * 0.7);
+        bit.className = 'star-bit';
+        bit.style.setProperty('--x', x + 'px');
+        bit.style.setProperty('--y', y + 'px');
+        bit.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+        bit.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+        bit.style.setProperty('--s', (5 + Math.random() * 11) + 'px');
+        bit.style.setProperty('--dur', (520 + Math.random() * 520) + 'ms');
+        bit.style.setProperty('--c', ['#ffd43d', '#f05d4f', '#087d76', '#2f69b1', '#4f9a58'][(Math.random() * 5) | 0]);
+        blastLayer.appendChild(bit);
+      }
+
+      blastTimer = setTimeout(cleanBlast, 1350);
+      setTimeout(() => document.body.classList.remove('shake'), 780);
+    }
+
+    function openParty(event) {
+      const rect = openGift.getBoundingClientRect();
+      const x = event && event.clientX ? event.clientX : rect.left + rect.width / 2;
+      const y = event && event.clientY ? event.clientY : rect.top + rect.height / 2;
+      blast(x, y);
+      door.classList.add('gone');
+      party.classList.add('shown');
+      party.setAttribute('aria-hidden', 'false');
+      setTimeout(() => { door.style.display = 'none'; }, 600);
+      setTimeout(() => adventure.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }), 720);
+    }
+
+    openGift.addEventListener('click', openParty);
+    document.querySelectorAll('[data-blast]').forEach((button) => {
+      button.addEventListener('click', () => blast(innerWidth / 2, Math.min(innerHeight * 0.62, 620)));
+    });
+  </script>
+</body>
+</html>
